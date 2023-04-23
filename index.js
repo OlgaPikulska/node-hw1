@@ -1,32 +1,47 @@
-// import yargs from 'yargs'
-// //const argv = require("yargs").argv;
-// //console.log(argv)
+import { listContacts, getContactById, removeContact, addContact } from "./contacts.js";
+import { Command } from "commander";
+import colors from "colors";
 
-// const argv = yargs.argv
+const program = new Command();
+program
+    .option("-a, --action <type>", "choose action")
+    .option("-i, --id <type>", "user id")
+    .option("-n, --name <type>", "user name")
+    .option("-e, --email <type>", "user email")
+    .option("-p, --phone <type>", "user phone");
 
-// // TODO: refaktor
-// function invokeAction({ action, id, name, email, phone }) {
-//     switch (action) {
-//         case "list":
-//             // ...
-//             break;
+program.parse(process.argv);
 
-//         case "get":
-//             // ... id
-//             break;
 
-//         case "add":
-//             // ... name email phone
-//             break;
+const argv = program.opts();
 
-//         case "remove":
-//             // ... id
-//             break;
+const invokeAction = async ({ action, id, name, email, phone }) => {
+    switch (action) {
+        case "list":
+            console.log(colors.cyan("This is contacts list:"), await listContacts())
+            break;
 
-//         default:
-//             console.warn("\x1B[31m Unknown action type!");
-//     }
-// }
+        case "get":
+            const contact = await getContactById(id);
+            if (contact) {
+                console.log(colors.cyan("This is a contact, you were looking for: "), contact)
+            } else {
+                colors.red("There is no contact with this id")
+            }
+            break;
 
-// invokeAction(argv);
+        case "add":
+            await addContact(name, email, phone)
+            console.log(colors.cyan(`You have added a new contact: ${name}!`))
+            break;
 
+        case "remove":
+            await removeContact(id)
+            break;
+
+        default:
+            console.warn("\x1B[31m Unknown action type!");
+    }
+}
+
+invokeAction(argv);
