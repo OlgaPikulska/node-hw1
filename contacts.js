@@ -11,7 +11,7 @@ const contactsPath = join(directoryName, fileName);
 export const listContacts = async () => {
     try {
         const contacts = await readFile(contactsPath, { encoding: "utf-8" });
-        return JSON.parse(contacts);
+        return JSON.parse(contacts)
     } catch (error) {
         console.log(error);
     }
@@ -21,7 +21,13 @@ export const getContactById = async (contactId) => {
     try {
         const parsedContacts = await listContacts();
         const searchedContact = parsedContacts.find(contact => contact.id === contactId)
-        return searchedContact
+        if (searchedContact) {
+
+            return console.log(colors.cyan("This is a contact, you were looking for: "), searchedContact)
+        } else {
+            return console.log(colors.red("There is no contact with this id"))
+        }
+
     } catch (error) {
         console.log(error)
     }
@@ -58,4 +64,5 @@ export const addContact = async (name, email, phone) => {
     const parsedContacts = await listContacts();
     const newContactsArray = [...parsedContacts, newContact]
     writeFile(contactsPath, JSON.stringify(newContactsArray, null, 2))
+    return console.log(colors.cyan(`You have added a new contact: ${name}!`))
 }

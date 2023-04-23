@@ -12,27 +12,20 @@ program
 
 program.parse(process.argv);
 
-
 const argv = program.opts();
 
 const invokeAction = async ({ action, id, name, email, phone }) => {
     switch (action) {
         case "list":
-            console.log(colors.cyan("This is contacts list:"), await listContacts())
+            console.log(colors.cyan("This is contacts list:"), await listContacts());
             break;
 
         case "get":
-            const contact = await getContactById(id);
-            if (contact) {
-                console.log(colors.cyan("This is a contact, you were looking for: "), contact)
-            } else {
-                colors.red("There is no contact with this id")
-            }
+            await getContactById(id);
             break;
 
         case "add":
             await addContact(name, email, phone)
-            console.log(colors.cyan(`You have added a new contact: ${name}!`))
             break;
 
         case "remove":
